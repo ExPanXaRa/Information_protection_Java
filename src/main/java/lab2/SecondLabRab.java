@@ -3,7 +3,7 @@ package lab2;
 import java.io.*;
 
 public class SecondLabRab {
-    private final static String filePath = "src\\main\\resources\\lab2";
+    private final static String dirPath = "src\\main\\resources\\lab2";
     private final static String opensslPath = "C:\\Program Files\\Git\\usr\\bin\\openssl.exe";
     private final static String tuxTail = "\\run\\files\\tux_tail.md";
     private final static String tuxTailEnc = "\\run\\files\\tux_tail_enc";
@@ -22,7 +22,7 @@ public class SecondLabRab {
     public static void openssl_aes(String key, String mode, byte[] header) {
         try {
             ProcessBuilder pb = new ProcessBuilder(opensslPath, "enc", "-aes-256-" + mode, "-in",
-                    filePath + tuxTail, "-out", filePath + tuxTailEnc + mode.toUpperCase() + ".md", "-pass", "pass:" + key);
+                    dirPath + tuxTail, "-out", dirPath + tuxTailEnc + mode.toUpperCase() + ".md", "-pass", "pass:" + key);
             Process p = pb.start();
             p.waitFor();
             unite(header, mode);
@@ -38,13 +38,13 @@ public class SecondLabRab {
         byte[] header = null;
         try {
             //Чтение файла
-            FileInputStream fileInputStream = new FileInputStream(filePath + "\\tux.bmp");
+            FileInputStream fileInputStream = new FileInputStream(dirPath + "\\tux.bmp");
             DataInputStream dataInputStream = new DataInputStream(fileInputStream);
             //Отделение хедера
             header = new byte[122];
             dataInputStream.readFully(header);
             //Сохранение файла с остатком
-            FileOutputStream fileOutputStream = new FileOutputStream(filePath + tuxTail);
+            FileOutputStream fileOutputStream = new FileOutputStream(dirPath + tuxTail);
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
             byte[] buffer = new byte[1024];
             int length;
@@ -64,7 +64,7 @@ public class SecondLabRab {
     public static void unite(byte[] header, String mode) {
         try {
             //Чтение зашифрованного тела файла
-            FileInputStream restInputStream = new FileInputStream(filePath + tuxTailEnc + mode.toUpperCase() + ".md");
+            FileInputStream restInputStream = new FileInputStream(dirPath + tuxTailEnc + mode.toUpperCase() + ".md");
             ByteArrayOutputStream restOutputStream = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int length;
@@ -73,7 +73,7 @@ public class SecondLabRab {
             }
             byte[] rest = restOutputStream.toByteArray();
             //Объединение хедера и конца с зашифрованным телом файла
-            FileOutputStream fileOutputStream = new FileOutputStream(filePath + "\\run\\tux_" + mode.toUpperCase() + ".bmp");
+            FileOutputStream fileOutputStream = new FileOutputStream(dirPath + "\\run\\tux_" + mode.toUpperCase() + ".bmp");
             fileOutputStream.write(header);
             fileOutputStream.write(rest);
             //Закрытие файлов

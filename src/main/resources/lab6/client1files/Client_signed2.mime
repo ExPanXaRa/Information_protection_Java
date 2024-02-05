@@ -1,0 +1,29 @@
+MIME-Version: 1.0
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha-256"; boundary="----12162B1EA3119BF7C3E406BBDF21A7FD"
+
+This is an S/MIME signed message
+
+------12162B1EA3119BF7C3E406BBDF21A7FD
+Текст документа пользователя 2
+------12162B1EA3119BF7C3E406BBDF21A7FD
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+
+MIICfAYJKoZIhvcNAQcCoIICbTCCAmkCAQExDzANBglghkgBZQMEAgEFADALBgkq
+hkiG9w0BBwExggJEMIICQAIBATAyMBoxGDAWBgNVBAMMD0lOVEVSTUVESUFURSBD
+QQIUPw1BaxUR5LaIhazCG7q2XkmSRb8wDQYJYIZIAWUDBAIBBQCggeQwGAYJKoZI
+hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwNjI1MDk0MzMy
+WjAvBgkqhkiG9w0BCQQxIgQgNtvrbp/CeQfsry1jQwXiOhsGG5a7XEP7nvy1We6D
+ROcweQYJKoZIhvcNAQkPMWwwajALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcN
+AwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEA
+girZUBu6yTTO5WHvpL9Npl6+yUjaXLxLS5RdjxXOuHUWYuq5+JgJ+4tr9xtu2zKF
+riD9NL52e568kUmgmT/FVJlbMjzfsyqHmDxIKWC10g9899mvJdbxoK3uhlYYjo+w
+kmmqsNMOWfnKjWZ7FVud+dVWwuqJESQpdFmONi3K6Mj3OmX9T0afJbTacphQzD80
+RsHaaUaWz4mX4fy6Jd3Ojz09GR5S0xYRdeMsWQLzmhgzRPH8z1ZwdmdmQjPL7kiw
+W9azDvq0GWcQOHWt9iwoK5zvaRKqGW++wU5hcbDZMVodeg8pfeC7LvysjKgQrvds
+Ia22RFSt9sZdrLuuNttqbw==
+
+------12162B1EA3119BF7C3E406BBDF21A7FD--
+

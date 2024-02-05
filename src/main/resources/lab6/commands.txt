@@ -1,0 +1,117 @@
+1openssl genpkey -algorithm ED448 -out root_keypair.pem
+2openssl req -new -subj "/CN=ROOT CA" -addext "basicConstraints=critical,CA:TRUE" -key root_keypair.pem -out root_csr.pem
+3//openssl req -in root_csr.pem -noout -text
+4openssl x509 -req -in root_csr.pem -signkey root_keypair.pem -days 3650 -out root_cert.pem
+5openssl x509 -in root_cert.pem -noout -text
+6openssl genpkey -algorithm ED448 -out intermediate_keypair.pem
+7openssl req -new -subj "/CN=INTERMEDIATE CA" -addext "basicConstraints=critical,CA:TRUE" -key intermediate_keypair.pem -out intermediate_csr.pem
+8openssl x509 -req -in intermediate_csr.pem -CA root_cert.pem -CAkey root_keypair.pem -extfile extensions.cnf -extensions nonLeaf -days 3650 -out intermediate_cert.pem
+9openssl x509 -in intermediate_cert.pem -noout -text
+10openssl genpkey -algorithm ED448 -out leaf_keypair.pem
+11openssl req -new -subj "/CN=LEAF" -addext "basicConstraints=critical,CA:FALSE" -key leaf_keypair.pem -out leaf_csr.pem
+12openssl x509 -req -in leaf_csr.pem -CA intermediate_cert.pem -CAkey intermediate_keypair.pem -extfile extensions.cnf -extensions Leaf -days 3650 -out leaf_cert.pem
+13openssl x509 -in leaf_cert.pem -noout -text
+14openssl verify -verbose -show_chain -trusted root_cert.pem -untrusted intermediate_cert.pem leaf_cert.pem
+
+Valid: OpenSSL 1.1.1s 1 Nov 2022, OpenSSL 1.1.1t 7 Feb 2023
+
+
+
+
+Самоподписыващийся сертификат:
+Генерация пары ключей:
+1openssl genpkey -algorithm RSA -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_keypair.pem"
+Создание простого запроса на подписание сертификата: (поэтому поля Issuer и Subject одинаковы)
+2openssl req -new -subj "/CN=ROOT CA" -addext "basicConstraints=critical,CA:TRUE" -key "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_keypair.pem" -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_csr.pem"
+Просмотр запроса:
+3!openssl req -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_csr.pem" -noout -text
+Генерация сертивиката на 10 лет
+4openssl x509 -req -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_csr.pem" -signkey "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_keypair.pem" -days 3650 -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_cert.pem"
+Просмотр сертификта:
+5openssl x509 -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_cert.pem" -noout -text
+
+Создание несамоподписывающегося сертификата
+Генерация пары ключей:
+6openssl genpkey -algorithm RSA-out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\intermediate_keypair.pem"
+Генерация запроса на подписание сертификата: (Поля Issuer и Subject отличаются)
+7openssl req -new -subj "/CN=INTERMEDIATE CA" -addext "basicConstraints=critical,CA:TRUE" -key "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\intermediate_keypair.pem" -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\intermediate_csr.pem"
+Выпуск сертификата промежуточного УЦ, подписанного закрытым ключом корневого сертификата, его просмотр:
+8openssl x509 -req -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\intermediate_csr.pem" -CA "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_cert.pem" -CAkey "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_keypair.pem" -extfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\extensions.cnf" -extensions nonLeaf -days 3650 -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\intermediate_cert.pem"
+Его просмотр:
+9openssl x509 -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\intermediate_cert.pem" -noout -text
+
+Выпуск листового сертификата (сообразно выпуску сертификата промежуточного УЦ), подписанного закрытым ключом
+сертификата промежуточного УЦ: (Листовой сертификат не должен использоваться для выпуска других сертификатов, поэтому CA:FALSE.)
+10openssl genpkey -algorithm RSA -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_keypair.pem"
+11openssl req -new -subj "/CN=LEAF" -addext "basicConstraints=critical,CA:FALSE" -key "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_keypair.pem" -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_csr.pem"
+12openssl x509 -req -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_csr.pem" -CA "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\intermediate_cert.pem" -CAkey "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\intermediate_keypair.pem" -extfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\extensions.cnf" -extensions Leaf -days 3650 -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_cert.pem"
+Его вывод:
+13openssl x509 -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_cert.pem" -noout -text
+Проверка сертификата:
+14openssl verify -verbose -show_chain -trusted "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_cert.pem" -untrusted "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\intermediate_cert.pem" "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_cert.pem"
+
+Valid: OpenSSL 1.1.1s 1 Nov 2022, OpenSSL 1.1.1t 7 Feb 2023
+
+
+
+
+Подпись
+openssl smime -sign -in <ваш_документ> -out <подписанный_документ> -signer <ваш_сертификат> -inkey <ваш_приватный_ключ>
+openssl smime -sign -in document.txt -out signed_document.txt -signer certificate.pem -inkey private_key.pem  (-CAfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_cert.pem")
+smime -sign -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client1.txt" -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client_signed1.mime" -signer "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\leaf_cert1.pem" -inkey "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\leaf_keypair1.pem"
+smime -sign -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client1.txt" -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client_signed1.mime" -signer "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\leaf_cert1.pem" -inkey "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\leaf_keypair1.pem" -nocerts
+
+Подтверждение
+openssl smime -verify -in <подписанный_документ> -inform DER -content <оригинальный_документ> -certfile <ваш_сертификат>
+openssl smime -verify -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_signed1.txt" -content "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\pippo.txt" -certfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_cert1.pem" 
+
+smime -verify -in signed_message.p7 -inform DER -CAfile ca_certificate.crt
+openssl smime -verify -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_signed1.mime" -content "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\pippo.txt" -certfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_cert1.pem" -CAfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\root_cert.pem"
+
+openssl smime -verify -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_signed1.mime" -content "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\pippo.txt" -certfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_cert1.pem" -inkey "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_keypair1.pem" 
+
+
+smime -verify -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\serverfiles\Client_signed1.mime" -CAfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\serverfiles\root_cert.pem" -noverify
+
+smime -verify -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client_signed1.mime" -content "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client1.txt" -certfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\leaf_cert1.pem"
+
+
+
+Работающий варик:
+smime -sign -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client1.txt" -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client_signed1.mime" -signer "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\leaf_cert1.pem" -inkey "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\leaf_keypair1.pem" -nocerts
+smime -verify -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client_signed1.mime"  -CAfile  "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\serverfiles\intermediate_cert.pem" -certfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\leaf_cert1.pem" -partial_chain
+
+
+
+
+Work:
+smime -verify -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client_signed1.mime" -content "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client1.txt"  -certfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\serverfiles\root_cert.pem" -noverify
+smime -verify -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client_signed1.mime" -content "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client1.txt"  -certfile smime -verify -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client_signed1.mime" -content "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\client1files\Client1.txt"  -certfile "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\serverfiles\root_cert.pem" -noverify
+-CA
+-CAKey
+
+
+
+
+
+
+
+openssl dgst -sha256 -sign private_key.pem -out signature.bin document.txt
+dgst -sha256 -sign "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_keypair1.pem" -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_signature1.bin" "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\pippo.txt"
+
+
+
+
+
+openssl dgst -sha256 -out hash.txt document.txt
+dgst -sha256 -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\pippo_hash.txt" "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\pippo.txt"
+openssl rsautl -sign -inkey private_key.pem -in hash.txt -out signature.bin
+rsautl -sign -inkey "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_keypair1.pem" -in "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\pippo_hash.txt" -out "C:\Users\aleks\Desktop\Универ\6 семестр\защита данных\лабы\kharchenko\lab7\test\leaf_signature1.bin"
+
+openssl rsautl -verify -inkey client_certificate.pem -pubin -in signature.bin -out verified_hash.txt
+
+
+
+
+
+openssl dgst -sha256 -sign "$(whoami)s Sign Key.key" -out sign.txt.sha256 sign.txt

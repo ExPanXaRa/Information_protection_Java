@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class FirstLabRab {
-    private final static String filePath = "src\\main\\resources\\lab1";
+    private final static String dirPath = "src\\main\\resources\\lab1";
     private final static String opensslPath = "C:\\Program Files\\Git\\usr\\bin\\openssl.exe";
     private final static String oldFile = "\\28.bmp";
     private final static String newFile = "\\run\\new28.bmp";
@@ -13,19 +13,19 @@ public class FirstLabRab {
 
     public static void start() {
         byte[] SHA1 = openssl_sha1();
-        Integer fileLong = fileSize(filePath + oldFile, " исходной картинки ");
+        Integer fileLong = fileSize(dirPath + oldFile, " исходной картинки ");
 
         int[] KEY = keyGenerator(fileLong);
         integration(SHA1, KEY, fileLong);
         extraction(KEY);
-        fileSize(filePath + newFile, " полученной картинки ");
+        fileSize(dirPath + newFile, " полученной картинки ");
     }
 
     //Извлечение кода SHA1 файла leasing.txt
     private static byte[] openssl_sha1() {
         byte[] sha1_byte = null;
         try {
-            ProcessBuilder pb = new ProcessBuilder(opensslPath, "dgst", "-sha1", filePath + "\\leasing.txt");
+            ProcessBuilder pb = new ProcessBuilder(opensslPath, "dgst", "-sha1", dirPath + "\\leasing.txt");
             Process p = pb.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String sha1Long = reader.readLine();
@@ -69,8 +69,8 @@ public class FirstLabRab {
     }
 
     //Определение размера картинки
-    private static Integer fileSize(String filePath, String num) {
-        File file = new File(filePath);
+    private static Integer fileSize(String dirPath, String num) {
+        File file = new File(dirPath);
         long fileSizeInBytes = file.length();
         System.out.println("Размер" + num + fileSizeInBytes + " байт");
         return (int) fileSizeInBytes;
@@ -78,8 +78,8 @@ public class FirstLabRab {
 
     // Внедрение сообщения в BMP-файл
     private static void integration(byte[] sha1, int[] key, int fileLong) {
-        File containerFile = new File(filePath + oldFile);
-        File outputFile = new File(filePath + newFile);
+        File containerFile = new File(dirPath + oldFile);
+        File outputFile = new File(dirPath + newFile);
         try {
             byte[] containerBytes = new byte[(int) containerFile.length()];
             FileInputStream fis = new FileInputStream(containerFile);
@@ -123,7 +123,7 @@ public class FirstLabRab {
 
     // Извлечение сообщения из BMP-файла
     private static void extraction(int[] key) {
-        File containerFile = new File(filePath + newFile);
+        File containerFile = new File(dirPath + newFile);
         int key_lenght = key.length;
         try {
             byte[] containerBytes = new byte[(int) containerFile.length()];
